@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PokeList from './PokeList';
 import axios from 'axios'
+import Pages from './Pages';
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -17,7 +18,7 @@ function App() {
     }).then(res => {
       setLoading(false);
       setNextURL(res.data.next)
-      setPrevURL(res.data.prev)
+      setPrevURL(res.data.previous)
       setPokemon(res.data.results.map(p => p.name))
     })
 
@@ -28,19 +29,25 @@ function App() {
   }, [currentURL])
 
 
-  function goNextPage () {
-    
+  function goNextPage() {
+    setCurrURL(nextURL);
+  }
+
+  function goPrevPage() {
+    setCurrURL(prevURL);
   }
 
 
   if (loading) return `Loading...`
 
-  const user = {
-    firstName: 'joe',
-    lastName: 'mama'
-  };
   return (
-    <PokeList pokemon={pokemon} />
+    <>
+      <PokeList pokemon={pokemon} />
+      <Pages
+        goNextPage ={nextURL ? goNextPage : null}
+        goPrevPage ={prevURL ? goPrevPage : null}
+      />
+    </>
   );
 }
 
